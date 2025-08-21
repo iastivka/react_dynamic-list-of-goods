@@ -7,40 +7,83 @@ import { Good } from './types/Good';
 
 export const App: React.FC = () => {
   const [goods, setGoods] = useState<Good[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const loadAll = async () => {
-    const data = await getAll();
+    try {
+      setError(null);
+      setLoading(true);
+      const data = await getAll();
 
-    setGoods(data);
+      setGoods(data);
+    } catch (e) {
+      setError('Failed to load goods. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const load5First = async () => {
-    const data = await get5First();
+    try {
+      setError(null);
+      setLoading(true);
+      const data = await get5First();
 
-    setGoods(data);
+      setGoods(data);
+    } catch (e) {
+      setError('Failed to load goods. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const loadRed = async () => {
-    const data = await getRedGoods();
+    try {
+      setError(null);
+      setLoading(true);
+      const data = await getRedGoods();
 
-    setGoods(data);
+      setGoods(data);
+    } catch (e) {
+      setError('Failed to load goods. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="App">
       <h1>Dynamic list of Goods</h1>
 
-      <button type="button" data-cy="all-button" onClick={loadAll}>
+      <button
+        type="button"
+        data-cy="all-button"
+        onClick={loadAll}
+        disabled={loading}
+      >
         Load all goods
       </button>
 
-      <button type="button" data-cy="first-five-button" onClick={load5First}>
+      <button
+        type="button"
+        data-cy="first-five-button"
+        onClick={load5First}
+        disabled={loading}
+      >
         Load 5 first goods
       </button>
 
-      <button type="button" data-cy="red-button" onClick={loadRed}>
+      <button
+        type="button"
+        data-cy="red-button"
+        onClick={loadRed}
+        disabled={loading}
+      >
         Load red goods
       </button>
+
+      {error && <p className="App__error">{error}</p>}
 
       <GoodsList goods={goods} />
     </div>
